@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 // sh 'export JDK_JAVA_OPTIONS="--add-opens java.base/java.lang=ALL-UNNAMED"'
-                sh 'export JVM_OPTS=" --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED"'
+                sh 'export JDK_JAVA_OPTIONS=" --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.math=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED"'
                 sh 'mvn -B -DskipTests clean package'
             }
         }
