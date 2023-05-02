@@ -28,7 +28,7 @@ pipeline {
                 }
             }
         }
-        stage {
+        stage('Deliver') {
             withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" , usernameVariable: "$usernameVariable" )]) {
 
                     writeFile file: 'abc.sh', text: 'ls'
