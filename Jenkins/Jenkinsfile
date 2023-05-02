@@ -12,6 +12,8 @@ pipeline {
         usernameVariable = credentials('username')
     }
 
+    def remote = [:]
+
     stages {
         stage('Build') {
             steps {
@@ -30,9 +32,14 @@ pipeline {
         }
         stage('Deliver') {
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" , usernameVariable: "$usernameVariable" )]) {
-
-                    writeFile file: 'abc.sh', text: 'ls'
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'web',
+                    keyFileVariable: 'identity',
+                    passphraseVariable: "$passphraseVariable" ,
+                    usernameVariable: "$usernameVariable"
+                    )]) {
+                    sshCommand remote: remote, command: 'ls'
+                    // sshCommand: remote, command: 'ls'
                 }
             }
         }
