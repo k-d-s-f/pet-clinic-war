@@ -32,7 +32,7 @@ pipeline {
         }
         stage('Deliver') {
             steps{
-                sshagent(credentials: ['web']) {
+                sshagent(credentials: ['web1']) {
                     sh '''
                         [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         ssh-keyscan -t rsa,dsa $remoteServer >> ~/.ssh/known_hosts
