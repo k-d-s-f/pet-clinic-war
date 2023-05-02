@@ -11,10 +11,7 @@ pipeline {
         passphraseVariable = credentials('ssh-pass')
         usernameVariable = credentials('username')
     }
-    def remote = [:]
-    remote.name = "agent1"
-    remote.host = ""
-    remote.allowAnyHosts = true
+
     stages {
         stage('Build') {
             steps {
@@ -31,7 +28,7 @@ pipeline {
                 }
             }
         }
-        withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" )]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" , usernameVariable: "$usernameVariable" )]) {
             // remote.user = userName
             // remote.identityFile = identity
             stage("SSH Steps Rocks!") {
