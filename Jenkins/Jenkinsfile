@@ -29,6 +29,7 @@ pipeline {
                 }
             }
         }
+        def remote = [:]
         stage('Deliver') {
             steps{
                 withCredentials([sshUserPrivateKey(
@@ -37,9 +38,7 @@ pipeline {
                     passphraseVariable: "$passphraseVariable" ,
                     usernameVariable: "$usernameVariable"
                     )]) {
-                    sh 'pwd'
-                    sh 'ls'
-                    // sshCommand: remote, command: 'ls'
+                     sshCommand remote: remote, command: 'pwd'
                 }
             }
         }
