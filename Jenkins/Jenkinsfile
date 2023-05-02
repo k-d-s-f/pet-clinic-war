@@ -12,9 +12,11 @@ pipeline {
         usernameVariable = credentials('username')
     }
 
-    def remote = [:]
 
     stages {
+        def remote = [:]
+        remote.allowAnyHosts = true
+
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
