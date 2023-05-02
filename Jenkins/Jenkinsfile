@@ -14,9 +14,6 @@ pipeline {
 
 
     stages {
-        def remote = [:]
-        remote.allowAnyHosts = true
-
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
@@ -40,7 +37,8 @@ pipeline {
                     passphraseVariable: "$passphraseVariable" ,
                     usernameVariable: "$usernameVariable"
                     )]) {
-                    sshCommand remote: remote, command: 'ls'
+                    sh 'pwd'
+                    sh 'ls'
                     // sshCommand: remote, command: 'ls'
                 }
             }
