@@ -10,6 +10,7 @@ pipeline {
     environment {
         passphraseVariable = credentials('ssh-pass')
         usernameVariable = credentials('username')
+        remoteServer = credentials('remote-server')
     }
 
 
@@ -29,17 +30,23 @@ pipeline {
                 }
             }
         }
-        def remote = [:]
         stage('Deliver') {
             steps{
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'web',
-                    keyFileVariable: 'identity',
-                    passphraseVariable: "$passphraseVariable" ,
-                    usernameVariable: "$usernameVariable"
-                    )]) {
-                     sshCommand remote: remote, command: 'pwd'
+                sshagent(credentials: ['web']) {
+                    sh '''
+                        [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
+                        ssh-keyscan -t rsa,dsa $remoteServer >> ~/.ssh/known_hosts
+                        ssh $usernameVariable@$remoteServer
+                    '''
                 }
+                // withCredentials([sshUserPrivateKey(
+                //     credentialsId: 'web',
+                //     keyFileVariable: 'identity',
+                //     passphraseVariable: "$passphraseVariable" ,
+                //     usernameVariable: "$usernameVariable"
+                //     )]) {
+                //      sshCommand remote: remote, command: 'pwd'
+                // }
             }
         }
         // stage('Deliver') {
