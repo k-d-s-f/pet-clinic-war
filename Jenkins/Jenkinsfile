@@ -12,7 +12,36 @@ pipeline {
         usernameVariable = credentials('username')
     }
 
-    node {
+//     node {
+//         withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" , usernameVariable: "$usernameVariable" )]) {
+//             remote.user = userName
+//             remote.identityFile = identity
+//             stage("SSH Steps Rocks!") {
+//                 writeFile file: 'abc.sh', text: 'ls'
+//                 sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+//                 sshPut remote: remote, from: 'abc.sh', into: '.'
+//                 sshGet remote: remote, from: 'abc.sh', into: 'bac.sh', override: true
+//                 sshScript remote: remote, script: 'abc.sh'
+//                 sshRemove remote: remote, path: 'abc.sh'
+//             }
+//         }
+// }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
         withCredentials([sshUserPrivateKey(credentialsId: 'web', keyFileVariable: 'identity', passphraseVariable: "$passphraseVariable" , usernameVariable: "$usernameVariable" )]) {
             remote.user = userName
             remote.identityFile = identity
@@ -25,27 +54,10 @@ pipeline {
                 sshRemove remote: remote, path: 'abc.sh'
             }
         }
-}
-    // stages {
-    //     stage('Build') {
-    //         steps {
-    //             sh 'mvn -B -DskipTests clean package'
-    //         }
-    //     }
-    //     stage('Test') {
-    //         steps {
-    //             sh 'mvn test'
-    //         }
-    //         post {
-    //             always {
-    //                 junit 'target/surefire-reports/*.xml'
-    //             }
-    //         }
-    //     }
-    //     stage('Deliver') {
-    //         steps {
-    //             sh './Jenkins/scripts/deliver.sh'
-    //         }
-    //     }
-    // }
+        // stage('Deliver') {
+        //     steps {
+        //         sh './Jenkins/scripts/deliver.sh'
+        //     }
+        // }
+    }
 }
